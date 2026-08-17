@@ -248,7 +248,10 @@ y Allure. El `junit-platform.properties` ya trae la ejecución paralela configur
 
 ## 10. Antes de entregar
 
-Revisa el checklist del Anexo C de la *Guía del Estudiante* y el de la plantilla de informe de
+Si el proyecto no compila o no levanta, el **Anexo C** de la *Guía del Estudiante* trae la
+verificación de entorno paso a paso y una tabla de síntomas frecuentes.
+
+Revisa el checklist del Anexo B de la *Guía del Estudiante* y el de la plantilla de informe de
 la Entrega 2. Los umbrales binarios de esta entrega son:
 
 - cobertura **0-switch = 100 %** sobre la máquina de estados,
