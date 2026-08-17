@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <title>MediTurno · Pacientes</title>
+    <link rel="stylesheet" th:href="@{/estilos.css}"/>
+</head>
+<body>
+<header class="barra">
+    <span class="marca">MediTurno 2.0</span>
+    <nav>
+        <a th:href="@{/}" data-testid="nav-reservas">Reservas</a>
+        <a th:href="@{/reservas/nueva}" class="boton" data-testid="nav-nueva">Nueva reserva</a>
+    </nav>
+</header>
+
+<main>
+    <h1>Pacientes</h1>
+    <img th:src="@{/logo.svg}" width="120" height="32"/>
+
+    <table data-testid="tabla-pacientes">
+        <thead>
+        <tr>
+            <th scope="col">RUT</th>
+            <th scope="col">Nombre</th>
+            <th scope="col">Nacimiento</th>
+            <th scope="col">Previsión</th>
+            <th scope="col">Tramo</th>
+            <th scope="col">Convenio</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="p : ${pacientes}" th:attr="data-testid='fila-paciente-' + ${p.rut()}">
+            <td th:text="${p.rut()}"></td>
+            <td th:text="${p.nombre()}"></td>
+            <td th:text="${p.fechaNacimiento()}"></td>
+            <td th:text="${p.prevision()}"></td>
+            <td th:text="${p.tramoFonasa()}"></td>
+            <td th:text="${p.convenioEmpresa()} ? 'Sí' : 'No'"></td>
+        </tr>
+        </tbody>
+    </table>
+
+    <p class="dato-secundario">Los pacientes se registran por la API:
+        <code>POST /api/pacientes</code></p>
+</main>
+</body>
+</html>

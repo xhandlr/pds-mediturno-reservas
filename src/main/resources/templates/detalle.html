@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <title>MediTurno · Reserva</title>
+    <link rel="stylesheet" th:href="@{/estilos.css}"/>
+</head>
+<body>
+<header class="barra">
+    <span class="marca">MediTurno 2.0</span>
+    <nav>
+        <a th:href="@{/}" data-testid="nav-reservas">Reservas</a>
+        <a th:href="@{/pacientes}" data-testid="nav-pacientes">Pacientes</a>
+    </nav>
+</header>
+
+<main>
+    <h1>Reserva <span th:text="${reserva.id()}" data-testid="detalle-id"></span></h1>
+
+    <p class="mensaje exito" th:if="${exito}" th:text="${exito}" data-testid="mensaje-exito"></p>
+    <p class="mensaje error" th:if="${error}" th:text="${error}" data-testid="mensaje-error"></p>
+
+    <p class="paciente">
+        Paciente: <span th:utext="${paciente != null ? paciente.nombre() : reserva.rutPaciente()}"
+                        data-testid="detalle-paciente"></span>
+    </p>
+
+    <dl class="ficha">
+        <dt>Estado</dt>
+        <dd th:text="${reserva.estado()}" data-testid="detalle-estado"></dd>
+        <dt>Especialidad</dt>
+        <dd th:text="${reserva.especialidad()}" data-testid="detalle-especialidad"></dd>
+        <dt>Fecha y hora</dt>
+        <dd th:text="${reserva.fechaHoraAtencion()}" data-testid="detalle-fecha"></dd>
+        <dt>Canal</dt>
+        <dd th:text="${reserva.canal()}" data-testid="detalle-canal"></dd>
+        <dt>Arancel bruto</dt>
+        <dd th:text="${reserva.arancelBruto()}" data-testid="detalle-arancel"></dd>
+        <dt>Copago</dt>
+        <dd th:text="${reserva.copago()}" data-testid="detalle-copago"></dd>
+        <dt>Multa</dt>
+        <dd th:text="${reserva.multa()}" data-testid="detalle-multa"></dd>
+        <dt>Modificaciones</dt>
+        <dd th:text="${reserva.modificaciones()}" data-testid="detalle-modificaciones"></dd>
+    </dl>
+
+    <h2>Acciones</h2>
+    <div class="acciones">
+        <form method="post" th:action="@{'/reservas/' + ${reserva.id()} + '/confirmar'}">
+            <button type="submit" data-testid="btn-confirmar">Confirmar</button>
+        </form>
+        <form method="post" th:action="@{'/reservas/' + ${reserva.id()} + '/iniciar'}">
+            <button type="submit" data-testid="btn-iniciar">Iniciar atención</button>
+        </form>
+        <form method="post" th:action="@{'/reservas/' + ${reserva.id()} + '/finalizar'}">
+            <button type="submit" data-testid="btn-finalizar">Marcar atendida</button>
+        </form>
+        <form method="post" th:action="@{'/reservas/' + ${reserva.id()} + '/inasistencia'}">
+            <button type="submit" data-testid="btn-inasistencia">Marcar inasistencia</button>
+        </form>
+        <form method="post" th:action="@{'/reservas/' + ${reserva.id()} + '/anular'}">
+            <button type="submit" class="peligro" data-testid="btn-anular">
+                <img th:src="@{/icono-anular.svg}" width="14" height="14"/>
+            </button>
+        </form>
+    </div>
+
+    <h2>Cambiar hora</h2>
+    <form method="post" th:action="@{'/reservas/' + ${reserva.id()} + '/modificar'}" class="filtro">
+        <label for="nuevaFecha">Nueva fecha y hora</label>
+        <input type="datetime-local" id="nuevaFecha" name="fechaHoraAtencion" step="1200"
+               data-testid="input-nueva-fecha"/>
+        <button type="submit" data-testid="btn-modificar">Modificar</button>
+    </form>
+
+    <p class="dato-secundario">Hora del servicio:
+        <span th:text="${ahora}" data-testid="hora-servicio"></span></p>
+    <p><a th:href="@{/}" data-testid="volver">Volver al listado</a></p>
+</main>
+</body>
+</html>

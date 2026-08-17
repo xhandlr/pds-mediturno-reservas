@@ -1,0 +1,9 @@
+services:
+  ms-reservas:
+    build: .
+    image: mediturno/ms-reservas:1.0.0
+    container_name: ms-reservas
+    ports:
+      - "8082:8082"
+    environment:
+      SPRING_PROFILES_ACTIVE: efimero

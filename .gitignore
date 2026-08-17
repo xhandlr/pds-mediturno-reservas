@@ -1,0 +1,9 @@
+target/
+datos/*.mv.db
+datos/*.trace.db
+allure-results/
+test-output/
+.idea/
+*.iml
+.vscode/
+.DS_Store

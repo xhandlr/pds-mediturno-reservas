@@ -1,0 +1,8 @@
+# Perfil con base de datos en memoria: cada arranque parte de cero.
+# Uso:  mvn spring-boot:run -Dspring-boot.run.profiles=efimero
+spring:
+  datasource:
+    url: jdbc:h2:mem:reservas;DB_CLOSE_DELAY=-1
+  jpa:
+    hibernate:
+      ddl-auto: create-drop

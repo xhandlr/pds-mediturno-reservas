@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <title>MediTurno · Nueva reserva</title>
+    <link rel="stylesheet" th:href="@{/estilos.css}"/>
+</head>
+<body>
+<header class="barra">
+    <span class="marca">MediTurno 2.0</span>
+    <nav>
+        <a th:href="@{/}" data-testid="nav-reservas">Reservas</a>
+        <a th:href="@{/pacientes}" data-testid="nav-pacientes">Pacientes</a>
+    </nav>
+</header>
+
+<main>
+    <h1>Nueva reserva</h1>
+
+    <p class="mensaje exito" th:if="${exito}" th:text="${exito}" data-testid="mensaje-exito"></p>
+    <p class="mensaje error" th:if="${error}" th:text="${error}" data-testid="mensaje-error"></p>
+
+    <form method="post" th:action="@{/reservas}" data-testid="form-reserva">
+
+        <div class="campo">
+            <input type="text" id="rutPaciente" name="rutPaciente" required
+                   placeholder="RUT del paciente" data-testid="input-rut"/>
+        </div>
+
+        <div class="campo">
+            <label for="especialidad">Especialidad</label>
+            <select id="especialidad" name="especialidad" data-testid="select-especialidad">
+                <option th:each="e : ${especialidades}" th:value="${e}" th:text="${e}"></option>
+            </select>
+        </div>
+
+        <div class="campo">
+            <input type="datetime-local" id="fechaHoraAtencion" name="fechaHoraAtencion" required
+                   step="1200" placeholder="Fecha y hora" data-testid="input-fecha"/>
+        </div>
+
+        <div class="campo">
+            <label for="canal">Canal</label>
+            <select id="canal" name="canal" data-testid="select-canal">
+                <option th:each="c : ${canales}" th:value="${c}" th:text="${c}"></option>
+            </select>
+        </div>
+
+        <div class="campo campo-check">
+            <input type="checkbox" id="aceptaListaEspera" name="aceptaListaEspera"
+                   data-testid="check-lista-espera"/>
+            <label for="aceptaListaEspera">Aceptar lista de espera si el bloque está ocupado</label>
+        </div>
+
+        <p class="ayuda-tenue" data-testid="ayuda-multa">
+            Anular con menos de 4 horas de anticipación tiene costo.
+        </p>
+
+        <button type="submit" class="boton" data-testid="btn-crear">Crear reserva</button>
+        <a th:href="@{/}" data-testid="btn-cancelar">Cancelar</a>
+    </form>
+
+    <h2>Pacientes registrados</h2>
+    <ul data-testid="lista-pacientes">
+        <li th:each="p : ${pacientes}"
+            th:text="${p.rut()} + ' — ' + ${p.nombre()} + ' (' + ${p.prevision()} + ')'"></li>
+    </ul>
+</main>
+</body>
+</html>

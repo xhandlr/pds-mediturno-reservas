@@ -1,0 +1,43 @@
+server:
+  port: 8082
+
+spring:
+  application:
+    name: ms-reservas
+  datasource:
+    url: jdbc:h2:file:./datos/mediturno-reservas;DB_CLOSE_DELAY=-1
+    driver-class-name: org.h2.Driver
+    username: sa
+    password: ""
+  jpa:
+    hibernate:
+      ddl-auto: update
+    open-in-view: false
+    properties:
+      hibernate:
+        format_sql: false
+  h2:
+    console:
+      enabled: true
+      path: /h2
+  thymeleaf:
+    cache: false
+  mvc:
+    problemdetails:
+      enabled: false
+
+mediturno:
+  reloj-simulado:
+    # Permite fijar la hora del servicio con la cabecera X-Reloj-Simulado.
+    # En un ambiente productivo esto iría en false.
+    habilitado: true
+
+springdoc:
+  swagger-ui:
+    path: /swagger
+  api-docs:
+    path: /api-docs
+
+logging:
+  level:
+    org.hibernate.SQL: warn

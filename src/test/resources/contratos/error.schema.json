@@ -1,0 +1,14 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Error de negocio o de validación",
+  "type": "object",
+  "required": ["codigo", "mensaje", "estado", "ruta", "instante"],
+  "additionalProperties": false,
+  "properties": {
+    "codigo":   { "type": "string", "pattern": "^[A-Z]{3}-[A-Z0-9-]+$" },
+    "mensaje":  { "type": "string", "minLength": 1 },
+    "estado":   { "type": "integer", "minimum": 400, "maximum": 599 },
+    "ruta":     { "type": "string", "minLength": 1 },
+    "instante": { "type": "string" }
+  }
+}
