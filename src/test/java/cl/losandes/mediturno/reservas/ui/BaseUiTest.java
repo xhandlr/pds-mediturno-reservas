@@ -89,9 +89,23 @@ public abstract class BaseUiTest {
     }
 
     protected void crearPacienteViaApi(String rut) {
+        crearPacienteViaApi(rut, "PARTICULAR", null);
+    }
+
+    /**
+     * Paciente FONASA con el tramo dado: a diferencia de PARTICULAR, acá la bonificación
+     * deja el copago por debajo del arancel bruto, lo que hace falta para notar defectos
+     * que confunden una base de cálculo con otra (ej. DEF-06).
+     */
+    protected void crearPacienteFonasaViaApi(String rut, String tramo) {
+        crearPacienteViaApi(rut, "FONASA", tramo);
+    }
+
+    private void crearPacienteViaApi(String rut, String prevision, String tramoFonasa) {
         try (Playwright playwright = Playwright.create()) {
             APIRequestContext api = playwright.request().newContext(
                     new APIRequest.NewContextOptions().setBaseURL(BASE_URL));
+            String tramoJson = tramoFonasa == null ? "null" : "\"" + tramoFonasa + "\"";
             APIResponse respuesta = api.post("/api/pacientes", RequestOptions.create()
                     .setHeader("Content-Type", "application/json")
                     .setData(
@@ -100,11 +114,11 @@ public abstract class BaseUiTest {
                       "rut": "%s",
                       "nombre": "Paciente de Prueba UI",
                       "fechaNacimiento": "1990-05-10",
-                      "prevision": "PARTICULAR",
-                      "tramoFonasa": null,
+                      "prevision": "%s",
+                      "tramoFonasa": %s,
                       "convenioEmpresa": false
                     }
-                    """.formatted(rut)));
+                    """.formatted(rut, prevision, tramoJson)));
             assertThat(respuesta.status()).as("creacion del paciente de prueba").isEqualTo(201);
         }
     }
