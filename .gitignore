@@ -8,3 +8,4 @@ test-output/
 .vscode/
 .DS_Store
 .venv-pairwise
+tools/acts/acts.jar
