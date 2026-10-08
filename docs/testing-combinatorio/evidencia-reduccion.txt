@@ -1,0 +1,6 @@
+Espacio exhaustivo: 46080
+Casos pairwise: 46
+Casos evitados: 46034
+Reducción: 99.9002%
+Espacio conservado: 0.0998%
+Interacciones 3-wise priorizadas: 128
