@@ -12,8 +12,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 class RelojSimuladoApiTest extends BaseApiTest {
 
     @Test
-    @DisplayName("RN-RES-02: una reserva anterior al reloj simulado se rechaza")
-    void reservaAnteriorAlRelojSimuladoSeRechaza() {
+    @DisplayName("CP-15: una reserva anterior al reloj simulado se rechaza")
+    void cp15_reservaAnteriorAlRelojSimuladoSeRechaza() {
 
         LocalDateTime relojSimulado =
                 LocalDateTime.of(2026, 10, 5, 9, 0);

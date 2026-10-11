@@ -36,6 +36,8 @@ class EscenariosPositivosApiTest extends BaseApiTest {
                 .as("GET /api/reservas/{id}")
                 .isEqualTo(200);
 
+        assertEsquema(consulta, "reserva.schema.json");
+
         assertThat(consulta.jsonPath().getLong("id"))
                 .isEqualTo(reserva.id());
 
@@ -67,7 +69,10 @@ class EscenariosPositivosApiTest extends BaseApiTest {
         assertThat(respuesta.statusCode())
                 .as("GET /api/reservas?rut=...")
                 .isEqualTo(200);
-
+        assertEsquema(
+                respuesta,
+                "lista-reservas.schema.json"
+        );
         List<Number> ids = respuesta.jsonPath().getList("id");
 
         assertThat(ids)
@@ -94,6 +99,7 @@ class EscenariosPositivosApiTest extends BaseApiTest {
         );
 
         assertThat(confirmada.statusCode()).isEqualTo(200);
+        assertEsquema(confirmada, "reserva.schema.json");
         assertThat(confirmada.jsonPath().getString("estado"))
                 .isEqualTo("CONFIRMADA");
 
@@ -162,6 +168,7 @@ class EscenariosPositivosApiTest extends BaseApiTest {
 
         assertThat(anulada.statusCode())
                 .isEqualTo(200);
+        assertEsquema(anulada, "reserva.schema.json");
 
         assertThat(anulada.jsonPath().getString("estado"))
                 .isEqualTo("ANULADA");
@@ -173,6 +180,7 @@ class EscenariosPositivosApiTest extends BaseApiTest {
                 reserva.id(),
                 relojAnulacion
         );
+        assertEsquema(consulta, "reserva.schema.json");
 
         assertThat(consulta.jsonPath().getString("estado"))
                 .isEqualTo("ANULADA");
