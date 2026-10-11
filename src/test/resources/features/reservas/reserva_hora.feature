@@ -49,7 +49,7 @@ Característica: Reserva de una hora médica
       | VL-RES01-10 | sábado  | 14:20 |
       | VL-RES01-11 | domingo | 10:00 |
 
-  @GH_RES_004 @RN_RES_02 @pairwise
+  @GH_RES_004 @RN_RES_02 @pairwise @smoke
   Esquema del escenario: Rechazar una reserva que no se encuentra en el futuro
     Dado un paciente con previsión <prevision>
     Y que solicita una atención con anticipación <anticipacion>
