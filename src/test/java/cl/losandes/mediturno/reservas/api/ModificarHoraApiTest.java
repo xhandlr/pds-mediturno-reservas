@@ -14,6 +14,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 class ModificarHoraApiTest extends BaseApiTest {
 
     private static final String ESPECIALIDAD = "MEDICINA_GENERAL";
+    private static final int MAX_INTENTOS_CUPO = 10;
+
+    private record Modificacion(Response respuesta, LocalDateTime nuevaFechaHora) { }
 
     /** Bloque nuevo en un día distinto al dado (lunes a viernes, lo garantiza el asignador). */
     private static LocalDateTime bloqueEnOtroDia(LocalDateTime original) {
@@ -25,17 +28,31 @@ class ModificarHoraApiTest extends BaseApiTest {
         }
     }
 
+    /** La base persiste entre corridas: un bloque asignado puede estar ya ocupado. */
+    private static Modificacion modificarConBloqueDisponible(ReservaCreada reserva) {
+        for (int intento = 0; intento < MAX_INTENTOS_CUPO; intento++) {
+            LocalDateTime nueva = bloqueEnOtroDia(reserva.fechaHora());
+            Response respuesta = ClienteReservas.modificar(reserva.id(), nueva, AHORA);
+            if (respuesta.statusCode() != 409
+                    || !"RES-CUPO".equals(respuesta.jsonPath().getString("codigo"))) {
+                return new Modificacion(respuesta, nueva);
+            }
+        }
+        throw new AssertionError("Sin bloque libre tras " + MAX_INTENTOS_CUPO + " intentos");
+    }
+
     @Test
     @DisplayName("CP-09: modificar la hora de una reserva en BORRADOR a otro día")
     void cp09_modificarBorradorAOtroDia() {
         ReservaCreada reserva = ClienteReservas.crearReservaOk(
                 PerfilPaciente.particular(), ESPECIALIDAD, AHORA);
         assertThat(reserva.estado()).isEqualTo("BORRADOR");
-        LocalDateTime nueva = bloqueEnOtroDia(reserva.fechaHora());
-
-        Response respuesta = ClienteReservas.modificar(reserva.id(), nueva, AHORA);
+        Modificacion modificacion = modificarConBloqueDisponible(reserva);
+        LocalDateTime nueva = modificacion.nuevaFechaHora();
+        Response respuesta = modificacion.respuesta();
 
         assertThat(respuesta.statusCode()).as("estado HTTP").isEqualTo(200);
+        assertEsquema(respuesta, "reserva.schema.json");
         assertThat(respuesta.jsonPath().getString("estado")).isEqualTo("BORRADOR");
         assertThat(respuesta.jsonPath().getInt("modificaciones")).isEqualTo(1);
         assertThat(LocalDateTime.parse(respuesta.jsonPath().getString("fechaHoraAtencion")))
@@ -43,6 +60,7 @@ class ModificarHoraApiTest extends BaseApiTest {
         assertThat(respuesta.jsonPath().getInt("copago")).isGreaterThanOrEqualTo(0);
 
         Response consulta = ClienteReservas.obtener(reserva.id(), AHORA);
+        assertEsquema(consulta, "reserva.schema.json");
         assertThat(consulta.jsonPath().getString("estado")).isEqualTo("BORRADOR");
         assertThat(consulta.jsonPath().getInt("modificaciones")).isEqualTo(1);
         assertThat(LocalDateTime.parse(consulta.jsonPath().getString("fechaHoraAtencion")))
@@ -55,11 +73,12 @@ class ModificarHoraApiTest extends BaseApiTest {
         ReservaCreada reserva = ClienteReservas.crearReservaOk(
                 PerfilPaciente.particular(), ESPECIALIDAD, AHORA);
         ClienteReservas.llevarA("CONFIRMADA", reserva.id(), AHORA);
-        LocalDateTime nueva = bloqueEnOtroDia(reserva.fechaHora());
-
-        Response respuesta = ClienteReservas.modificar(reserva.id(), nueva, AHORA);
+        Modificacion modificacion = modificarConBloqueDisponible(reserva);
+        LocalDateTime nueva = modificacion.nuevaFechaHora();
+        Response respuesta = modificacion.respuesta();
 
         assertThat(respuesta.statusCode()).as("estado HTTP").isEqualTo(200);
+        assertEsquema(respuesta, "reserva.schema.json");
         assertThat(respuesta.jsonPath().getString("estado")).isEqualTo("CONFIRMADA");
         assertThat(respuesta.jsonPath().getInt("modificaciones")).isEqualTo(1);
         assertThat(LocalDateTime.parse(respuesta.jsonPath().getString("fechaHoraAtencion")))
@@ -67,6 +86,7 @@ class ModificarHoraApiTest extends BaseApiTest {
         assertThat(respuesta.jsonPath().getInt("copago")).isGreaterThanOrEqualTo(0);
 
         Response consulta = ClienteReservas.obtener(reserva.id(), AHORA);
+        assertEsquema(consulta, "reserva.schema.json");
         assertThat(consulta.jsonPath().getString("estado")).isEqualTo("CONFIRMADA");
         assertThat(consulta.jsonPath().getInt("modificaciones")).isEqualTo(1);
     }

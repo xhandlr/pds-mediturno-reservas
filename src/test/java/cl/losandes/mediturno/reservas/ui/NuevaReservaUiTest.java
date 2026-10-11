@@ -1,7 +1,6 @@
 package cl.losandes.mediturno.reservas.ui;
 
 import cl.losandes.mediturno.reservas.ui.paginas.DetalleReservaPage;
-import cl.losandes.mediturno.reservas.ui.paginas.NuevaReservaPage;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -22,11 +21,10 @@ class NuevaReservaUiTest extends BaseUiTest {
         // para no chocar con reservas que haya dejado una ejecución anterior.
         LocalDateTime ahora = LocalDateTime.of(2026, 10, 5, 9, 0);
         fijarReloj(ahora);
-        LocalDateTime horaAtencion = bloqueNuevo(ahora);
-
-        new NuevaReservaPage(page, BASE_URL)
-                .navegar()
-                .crearReserva(rut, "MEDICINA_GENERAL", horaAtencion, "WEB", false);
+        crearReservaConBloqueLibre(rut, "MEDICINA_GENERAL", ahora);
+        assertThat(page.locator("[data-testid=detalle-id]").count())
+                .as("detalle renderizado en " + page.url())
+                .isEqualTo(1);
 
         // Al crear con éxito, el controlador redirige al detalle de la reserva, no al listado.
         DetalleReservaPage detalle = new DetalleReservaPage(page, BASE_URL).esperarCargada();

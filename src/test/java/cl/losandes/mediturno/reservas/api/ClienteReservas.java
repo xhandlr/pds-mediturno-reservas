@@ -77,6 +77,7 @@ public final class ClienteReservas {
             String rut = rutNuevo();
             Response r = crearPacienteConRut(rut, perfil);
             if (r.statusCode() == 201) {
+                BaseApiTest.assertEsquema(r, "paciente.schema.json");
                 return rut;
             }
             assertThat(r.statusCode()).as("creacion de paciente: " + r.asString()).isEqualTo(409);
@@ -117,6 +118,7 @@ public final class ClienteReservas {
             LocalDateTime bloque = AsignadorBloques.siguiente(reloj);
             Response r = crearReserva(rut, especialidad, bloque, canal, aceptaListaEspera, reloj);
             if (r.statusCode() == 201) {
+                BaseApiTest.assertEsquema(r, "reserva.schema.json");
                 return new ReservaCreada(r.jsonPath().getLong("id"), r.jsonPath().getString("estado"),
                         rut, especialidad, bloque);
             }
