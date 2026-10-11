@@ -19,17 +19,13 @@ class ListaDeEsperaUiTest extends BaseUiTest {
     void cp03_listaDeEsperaSePromueveAlAnularLaActiva() {
         LocalDateTime ahora = LocalDateTime.of(2026, 10, 5, 9, 0);
         fijarReloj(ahora);
-        LocalDateTime bloque = bloqueNuevo(ahora);
-
         String rutUno = rutNuevo();
         crearPacienteViaApi(rutUno);
         String rutDos = rutNuevo();
         crearPacienteViaApi(rutDos);
 
         // 1a reserva: ocupa el único cupo del bloque.
-        new NuevaReservaPage(page, BASE_URL)
-                .navegar()
-                .crearReserva(rutUno, "CARDIOLOGIA", bloque, "WEB", false);
+        LocalDateTime bloque = crearReservaConBloqueLibre(rutUno, "CARDIOLOGIA", ahora);
         DetalleReservaPage detalleUno = new DetalleReservaPage(page, BASE_URL).esperarCargada();
         assertThat(detalleUno.estado()).isEqualTo("BORRADOR");
         long idUno = idDesdeUrl();

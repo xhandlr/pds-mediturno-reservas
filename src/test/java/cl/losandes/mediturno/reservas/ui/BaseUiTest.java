@@ -1,5 +1,6 @@
 package cl.losandes.mediturno.reservas.ui;
 
+import cl.losandes.mediturno.reservas.ui.paginas.NuevaReservaPage;
 import com.microsoft.playwright.APIRequest;
 import com.microsoft.playwright.APIRequestContext;
 import com.microsoft.playwright.APIResponse;
@@ -8,10 +9,12 @@ import com.microsoft.playwright.BrowserContext;
 import com.microsoft.playwright.BrowserType;
 import com.microsoft.playwright.Page;
 import com.microsoft.playwright.Playwright;
+import com.microsoft.playwright.options.LoadState;
 import com.microsoft.playwright.options.RequestOptions;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 
+import java.net.URI;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Map;
@@ -88,14 +91,35 @@ public abstract class BaseUiTest {
         return dia.atTime(hora, 0);
     }
 
+    /** Crea por UI y reintenta solo si la base persistente ya ocupa el bloque sorteado. */
+    protected LocalDateTime crearReservaConBloqueLibre(String rut, String especialidad,
+                                                       LocalDateTime ahora) {
+        for (int intento = 0; intento < 10; intento++) {
+            LocalDateTime bloque = bloqueNuevo(ahora);
+            new NuevaReservaPage(page, BASE_URL)
+                    .navegar()
+                    .crearReserva(rut, especialidad, bloque, "WEB", false);
+            page.waitForLoadState(LoadState.DOMCONTENTLOADED);
+            String ruta = URI.create(page.url()).getPath().split(";", 2)[0];
+            if (ruta.matches("/reservas/\\d+")) {
+                return bloque;
+            }
+            assertThat(ruta).as("redirección tras crear la reserva").isEqualTo("/reservas/nueva");
+            assertThat(page.locator("[data-testid=mensaje-error]").textContent())
+                    .as("solo se reintenta una colisión de cupo")
+                    .contains("RES-CUPO");
+        }
+        throw new AssertionError("Sin cupo tras 10 intentos por UI");
+    }
+
     protected void crearPacienteViaApi(String rut) {
         crearPacienteViaApi(rut, "PARTICULAR", null);
     }
 
     /**
      * Paciente FONASA con el tramo dado: a diferencia de PARTICULAR, acá la bonificación
-     * deja el copago por debajo del arancel bruto, lo que hace falta para notar defectos
-     * que confunden una base de cálculo con otra (ej. DEF-06).
+     * deja el copago por debajo del arancel bruto y permite comprobar que las
+     * multas usan la base de cálculo correcta.
      */
     protected void crearPacienteFonasaViaApi(String rut, String tramo) {
         crearPacienteViaApi(rut, "FONASA", tramo);
