@@ -50,4 +50,23 @@ class AnulacionEstadosApiTest extends BaseApiTest {
         assertThat(consulta.jsonPath().getString("estado")).isEqualTo("ATENDIDA");
         assertThat(consulta.jsonPath().getInt("multa")).isZero();
     }
+
+    // T04 BORRADOR -> ANULADA; oráculo S-03: anular un BORRADOR está permitido y no genera multa.
+    @Test
+    @DisplayName("CP-25: anular una reserva en BORRADOR no genera multa")
+    void cp25_anularBorradorSinMulta() {
+        ReservaCreada reserva = ClienteReservas.crearReservaOk(
+                PerfilPaciente.particular(), ESPECIALIDAD, AHORA);
+        LocalDateTime reloj = reserva.fechaHora().minusMinutes(120);
+
+        Response respuesta = ClienteReservas.anular(reserva.id(), reloj);
+
+        assertThat(respuesta.statusCode()).as("estado HTTP").isEqualTo(200);
+        assertEsquema(respuesta, "reserva.schema.json");
+        assertThat(respuesta.jsonPath().getString("estado")).isEqualTo("ANULADA");
+        assertThat(respuesta.jsonPath().getInt("multa")).isZero();
+        Response consulta = ClienteReservas.obtener(reserva.id(), reloj);
+        assertThat(consulta.jsonPath().getString("estado")).isEqualTo("ANULADA");
+        assertThat(consulta.jsonPath().getInt("multa")).isZero();
+    }
 }

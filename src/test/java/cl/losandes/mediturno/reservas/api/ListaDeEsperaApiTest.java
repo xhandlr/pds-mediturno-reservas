@@ -30,6 +30,37 @@ class ListaDeEsperaApiTest extends BaseApiTest {
         return new Escenario(primera, segunda.jsonPath().getLong("id"));
     }
 
+    // T02 BORRADOR -> EN_ESPERA; oráculo S-04: en bloque ocupado con aceptaListaEspera=true
+    // la segunda queda EN_ESPERA (201) y la primera conserva su estado.
+    @Test
+    @DisplayName("CP-26: crear en bloque ocupado aceptando lista de espera deja la reserva EN_ESPERA")
+    void cp26_crearEnBloqueOcupadoQuedaEnEspera() {
+        Escenario e = armarEscenario();
+
+        Response segunda = ClienteReservas.obtener(e.idSegunda(), AHORA);
+        assertThat(segunda.jsonPath().getString("estado")).isEqualTo("EN_ESPERA");
+        Response primera = ClienteReservas.obtener(e.primera().id(), AHORA);
+        assertThat(primera.jsonPath().getString("estado")).isEqualTo("BORRADOR");
+    }
+
+    // T07 EN_ESPERA -> CONFIRMADA; oráculo S-07: al anular la reserva que ocupaba el cupo,
+    // la EN_ESPERA más antigua del mismo bloque y especialidad pasa a CONFIRMADA.
+    @Test
+    @DisplayName("CP-27: anular la primera reserva promueve a CONFIRMADA la que está EN_ESPERA")
+    void cp27_anularPrimeraPromueveEnEspera() {
+        Escenario e = armarEscenario();
+        LocalDateTime reloj = e.primera().fechaHora().minusMinutes(300);
+
+        Response respuesta = ClienteReservas.anular(e.primera().id(), reloj);
+
+        assertThat(respuesta.statusCode()).as("estado HTTP").isEqualTo(200);
+        assertEsquema(respuesta, "reserva.schema.json");
+        assertThat(ClienteReservas.obtener(e.primera().id(), reloj).jsonPath().getString("estado"))
+                .isEqualTo("ANULADA");
+        assertThat(ClienteReservas.obtener(e.idSegunda(), reloj).jsonPath().getString("estado"))
+                .isEqualTo("CONFIRMADA");
+    }
+
     // Falla estable: observa 200 frente a 409 esperado; clasificación normativa pendiente.
     @Test
     @DisplayName("CP-10: confirmar desde la lista de espera sin cupo se rechaza")
