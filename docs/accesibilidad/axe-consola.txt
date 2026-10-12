@@ -1,0 +1,55 @@
+[INFO] Scanning for projects...
+[INFO] 
+[INFO] -----------------< cl.losandes.mediturno:ms-reservas >------------------
+[INFO] Building ms-reservas 1.0.0
+[INFO]   from pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- resources:3.3.1:resources (default-resources) @ ms-reservas ---
+[INFO] Copying 2 resources from src\main\resources to target\classes
+[INFO] Copying 8 resources from src\main\resources to target\classes
+[INFO] 
+[INFO] --- compiler:3.13.0:compile (default-compile) @ ms-reservas ---
+[INFO] Nothing to compile - all classes are up to date.
+[INFO] 
+[INFO] --- resources:3.3.1:testResources (default-testResources) @ ms-reservas ---
+[INFO] Copying 10 resources from src\test\resources to target\test-classes
+[INFO] 
+[INFO] --- compiler:3.13.0:testCompile (default-testCompile) @ ms-reservas ---
+[INFO] Nothing to compile - all classes are up to date.
+[INFO] 
+[INFO] --- surefire:3.2.5:test (default-test) @ ms-reservas ---
+[INFO] 
+[INFO] --- jar:3.4.2:jar (default-jar) @ ms-reservas ---
+[INFO] 
+[INFO] --- spring-boot:3.3.4:repackage (repackage) @ ms-reservas ---
+[INFO] Replacing main artifact C:\Users\shado\Documents\weaclases\PruebasSoft\pds-mediturno-reservas\target\ms-reservas-1.0.0.jar with repackaged archive, adding nested dependencies in BOOT-INF/.
+[INFO] The original artifact has been renamed to C:\Users\shado\Documents\weaclases\PruebasSoft\pds-mediturno-reservas\target\ms-reservas-1.0.0.jar.original
+[INFO] 
+[INFO] --- failsafe:3.2.5:integration-test (default) @ ms-reservas ---
+[INFO] Using auto detected provider org.apache.maven.surefire.junitplatform.JUnitPlatformProvider
+[INFO] 
+[INFO] -------------------------------------------------------
+[INFO]  T E S T S
+[INFO] -------------------------------------------------------
+[INFO] Running cl.losandes.mediturno.reservas.ui.AccesibilidadAuditIT
+A11Y|/|violaciones=0
+A11Y|/reservas/nueva|violaciones=2
+A11Y|/reservas/nueva|color-contrast|serious|[cat.color, wcag2aa, wcag143, TTv5, TT13.c, EN-301-549, EN-9.1.4.3, ACT]|[p]|Fix any of the following:   Element has insufficient color contrast of 2.35 (foreground color: #a9a9a9, background color: #ffffff, font size: 10.2pt (13.6px), font weight: normal). Expected contrast ratio of 4.5:1
+A11Y|/reservas/nueva|html-has-lang|serious|[cat.language, wcag2a, wcag311, TTv5, TT11.a, EN-301-549, EN-9.3.1.1, ACT]|[html]|Fix any of the following:   The <html> element does not have a lang attribute
+A11Y|/pacientes|violaciones=1
+A11Y|/pacientes|image-alt|critical|[cat.text-alternatives, wcag2a, wcag111, section508, section508.22.a, TTv5, TT7.a, TT7.b, EN-301-549, EN-9.1.1.1, ACT]|[img]|Fix any of the following:   Element does not have an alt attribute   aria-label attribute does not exist or is empty   aria-labelledby attribute does not exist, references elements that do not exist or references elements that are empty   Element has no title attribute   Element's default semantics were not overridden with role="none" or role="presentation"
+[INFO] Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 7.649 s -- in cl.losandes.mediturno.reservas.ui.AccesibilidadAuditIT
+[INFO] 
+[INFO] Results:
+[INFO] 
+[INFO] Tests run: 1, Failures: 0, Errors: 0, Skipped: 0
+[INFO] 
+[INFO] 
+[INFO] --- failsafe:3.2.5:verify (default) @ ms-reservas ---
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESS
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  11.815 s
+[INFO] Finished at: 2026-10-12T17:25:54-03:00
+[INFO] ------------------------------------------------------------------------
