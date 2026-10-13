@@ -25,7 +25,7 @@ class AccesibilidadAuditIT {
                     new BrowserType.LaunchOptions().setHeadless(true));
             try {
                 Page page = browser.newPage();
-                for (String ruta : List.of("/reservas/nueva", "/pacientes")) {
+                for (String ruta : List.of("/", "/reservas/nueva", "/pacientes")) {
                     page.navigate(baseUrl + ruta);
                     AxeResults resultado = new AxeBuilder(page)
                             .withTags(List.of("wcag2a", "wcag2aa", "wcag21a", "wcag21aa"))
