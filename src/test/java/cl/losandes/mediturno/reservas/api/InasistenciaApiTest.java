@@ -15,8 +15,8 @@ class InasistenciaApiTest extends BaseApiTest {
 
     private static final String ESPECIALIDAD = "MEDICINA_GENERAL";
 
-    // T11 CONFIRMADA -> NO_ASISTIDA; oráculos S-10 (multa = 50 % del copago, redondeo al peso
-    // superior, RN-RES-07) y S-11 (la inasistencia no se condiciona a la hora de la cita).
+    // T11 CONFIRMADA -> NO_ASISTIDA; oráculos (supuestos del equipo): multa = 50 % del copago, redondeo al peso
+    // superior (RN-RES-07), y la inasistencia no se condiciona a la hora de la cita.
     @Test
     @DisplayName("CP-28: registrar inasistencia de una reserva CONFIRMADA cobra el 50 % del copago")
     void cp28_inasistenciaConfirmadaMulta50() {

@@ -54,7 +54,7 @@ class AnulacionEstadosApiTest extends BaseApiTest {
         assertThat(consulta.jsonPath().getInt("multa")).isZero();
     }
 
-    // T04 BORRADOR -> ANULADA; oráculo S-03: anular un BORRADOR está permitido y no genera multa.
+    // T04 BORRADOR -> ANULADA; oráculo (supuesto del equipo): anular un BORRADOR está permitido y no genera multa.
     @Test
     @Disabled("DEF-12: anular un BORRADOR cobra multa por anticipacion (multa 7500 en vez de 0). Ver Bitacora de Defectos.")
     @DisplayName("CP-25: anular una reserva en BORRADOR no genera multa")

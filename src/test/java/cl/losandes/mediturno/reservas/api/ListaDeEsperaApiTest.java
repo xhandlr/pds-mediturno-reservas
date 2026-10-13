@@ -31,7 +31,7 @@ class ListaDeEsperaApiTest extends BaseApiTest {
         return new Escenario(primera, segunda.jsonPath().getLong("id"));
     }
 
-    // T02 BORRADOR -> EN_ESPERA; oráculo S-04: en bloque ocupado con aceptaListaEspera=true
+    // T02 BORRADOR -> EN_ESPERA; oráculo (supuesto del equipo): en bloque ocupado con aceptaListaEspera=true
     // la segunda queda EN_ESPERA (201) y la primera conserva su estado.
     @Test
     @DisplayName("CP-26: crear en bloque ocupado aceptando lista de espera deja la reserva EN_ESPERA")
@@ -44,7 +44,7 @@ class ListaDeEsperaApiTest extends BaseApiTest {
         assertThat(primera.jsonPath().getString("estado")).isEqualTo("BORRADOR");
     }
 
-    // T07 EN_ESPERA -> CONFIRMADA; oráculo S-07: al anular la reserva que ocupaba el cupo,
+    // T07 EN_ESPERA -> CONFIRMADA; oráculo (supuesto del equipo): al anular la reserva que ocupaba el cupo,
     // la EN_ESPERA más antigua del mismo bloque y especialidad pasa a CONFIRMADA.
     @Test
     @DisplayName("CP-27: anular la primera reserva promueve a CONFIRMADA la que está EN_ESPERA")

@@ -224,7 +224,7 @@ class SecuenciasCriticasApiTest extends BaseApiTest {
         assertConsulta(reserva.id(), reloj, "NO_ASISTIDA", multa, 1);
     }
 
-    // T05 -> T04; oraculo S-03: anular un BORRADOR no genera multa. Falla por DEF-12 (multa 7500,
+    // T05 -> T04; oraculo (supuesto del equipo): anular un BORRADOR no genera multa. Falla por DEF-12 (multa 7500,
     // igual que CP-25); evidencia en el registro de corrida con INCLUDE_DISABLED.
     @Test
     @Disabled("DEF-12: anular un BORRADOR cobra multa por anticipacion (Reserva.anular no considera el estado de origen). Ver Bitacora de Defectos.")
@@ -283,7 +283,7 @@ class SecuenciasCriticasApiTest extends BaseApiTest {
 
     // ----------------------------------------------------- efecto de la anulacion
 
-    // T02 -> T08 (C-07). Oraculo S-06 y S-07: anular una reserva EN_ESPERA no libera cupo (no lo
+    // T02 -> T08. Oraculo (supuestos del equipo): anular una reserva EN_ESPERA no libera cupo (no lo
     // ocupaba) y por lo tanto no promueve a otra; el bloque nunca tiene dos CONFIRMADA. Bloque con
     // una CONFIRMADA y dos EN_ESPERA: se anula una y la otra debe seguir EN_ESPERA. La multa no se
     // afirma aqui (DEF-12 la cubre CP-11). No agrega un par 1-switch: T02-T08 ya cuenta via CP-11.
