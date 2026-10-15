@@ -214,8 +214,14 @@ src/main/resources/
 └── pacientes.csv     padrón inicial
 
 src/test/
-├── java/             ← aquí escribes tu suite (hoy vacío, a propósito)
+├── java/cl/losandes/mediturno/reservas/
+│   ├── api/          pruebas RestAssured (0-switch, 1-switch, transiciones inválidas,
+│   │                 valores límite, entradas malformadas y maliciosas)
+│   ├── ui/           pruebas Playwright y auditoría axe-core (AccesibilidadAuditIT)
+│   │   └── paginas/  Page Objects (POM) de cada pantalla
+│   └── gherkin/      steps, hooks y runner de Cucumber
 └── resources/
+    ├── features/     escenarios Gherkin
     ├── contratos/    JSON Schema del contrato de la API
     └── junit-platform.properties   ejecución paralela ya configurada
 
@@ -229,15 +235,65 @@ docs/openapi.yaml     contrato HTTP completo
 | Suite rápida (`*Test`) | `mvn -B test` |
 | Suite de sistema, UI y API (`*IT`, runners de Cucumber) | `mvn -B verify` |
 | Instalar navegadores de Playwright | `mvn -B exec:java -Dexec.mainClass=com.microsoft.playwright.CLI -Dexec.args="install"` |
-| Reporte de evidencia | `allure serve target/allure-results` |
+| Una sola clase de prueba | `mvn -B test -Dtest=NombreDeLaClase` |
+| Forzar una prueba deshabilitada por defecto | `mvn -B test -Dtest=NombreDeLaClase -Djunit.jupiter.conditions.deactivate='org.junit.*DisabledCondition'` |
+| Tres ejecuciones consecutivas en orden aleatorio | `for i in 1 2 3; do mvn -B test -Dsurefire.runOrder=random \| grep -E "Tests run: [0-9]+, F.*Skipped: [0-9]+$\|BUILD" \| tail -2; done` |
+
+El reporte Allure de la última ejecución completa ya está generado en
+`docs/reportes/e2-funcionales/index.html`.
 
 Las dependencias de la entrega ya están declaradas en el `pom.xml` y no hay que agregarlas:
 Cucumber 7, RestAssured 5 con `json-schema-validator`, Playwright, `axe-core` para Playwright
 y Allure. El `junit-platform.properties` ya trae la ejecución paralela configurada.
 
+### 8.1 Entorno reproducible de pruebas
+
+Entorno en que se ejecutó la suite y se obtuvieron los resultados de esta entrega:
+
+| Componente | Versión |
+|---|---|
+| Sistema operativo | Fedora Linux 42 (kernel 6.19) |
+| Hardware | Intel Core i7-12700H, 20 hilos, 16 GB de RAM |
+| JDK | OpenJDK 21.0.11 (el proyecto compila para Java 17) |
+| Maven | 3.9.9 |
+| Playwright | 1.47.0, navegador Chromium en modo headless |
+| Servicio | `ms-reservas` en `http://localhost:8082`, perfil `efimero` (H2 en memoria) |
+
+Estructura de la suite de la Entrega 2:
+
+```
+src/test/java/cl/losandes/mediturno/reservas/
+├── api/          pruebas RestAssured (0-switch, 1-switch, transiciones inválidas,
+│                 valores límite, entradas malformadas y maliciosas)
+├── ui/           pruebas Playwright y auditoría axe-core (AccesibilidadAuditIT)
+│   └── paginas/  Page Objects (POM) de cada pantalla
+└── gherkin/      steps, hooks y runner de Cucumber
+src/test/resources/features/   escenarios Gherkin
+docs/reportes/e2-funcionales/index.html   reporte Allure generado
+```
+
+1. Levantar el servicio con base en memoria, para partir siempre de datos limpios:
+   `mvn spring-boot:run -Dspring-boot.run.profiles=efimero`. Las pruebas de UI y API
+   apuntan a `http://localhost:8082`. Otra URL se indica con `-Dui.baseUrl=...` (UI)
+   y `-Dapi.baseUrl=...` (API).
+2. En otra terminal, ejecutar `mvn -B test` (o `mvn -B verify` para incluir `*IT` y Cucumber).
+3. Cada prueba crea su propio paciente (RUT aleatorio) y busca un bloque libre, y fija la hora
+   con la cabecera `X-Reloj-Simulado`. Por eso no dependen del orden ni de datos previos y
+   pueden correr en paralelo.
+4. Para ver el navegador durante las pruebas de UI: `-Dui.headless=false`.
+
+**Pruebas omitidas (`Skipped`).** Las pruebas que exponen un defecto conocido están marcadas
+con `@Disabled("DEF-XX: ...")`, de modo que la suite termina en verde y el defecto queda
+registrado en la bitácora. Para reproducir un defecto, se fuerza su prueba con el comando
+de la tabla anterior: en ese caso la prueba debe fallar.
+
+**Advertencia de Playwright en algunas distribuciones Linux.** El mensaje
+`Host system is missing dependencies to run browsers` puede aparecer en distribuciones no
+basadas en Ubuntu (por ejemplo, Fedora). Si las pruebas de UI se ejecutan igual, se puede
+ignorar.
+
 ## 9. Lo que este código NO hace
 
-- **No hay pruebas.** `src/test/java` está vacío a propósito.
 - **No hay autenticación.** Cualquiera puede operar cualquier reserva. Está fuera del alcance
   de esta entrega.
 - **El sobrecupo del Release 2.1 no existe todavía.** Hoy cada bloque admite **una** reserva
