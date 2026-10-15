@@ -113,7 +113,12 @@ public abstract class BaseUiTest {
     }
 
     protected void crearPacienteViaApi(String rut) {
-        crearPacienteViaApi(rut, "PARTICULAR", null);
+        crearPacienteViaApi(rut, "Paciente de Prueba UI", "PARTICULAR", null);
+    }
+
+    /** Paciente PARTICULAR con el nombre dado (por ejemplo, un nombre que contiene HTML). */
+    protected void crearPacienteConNombreViaApi(String rut, String nombre) {
+        crearPacienteViaApi(rut, nombre, "PARTICULAR", null);
     }
 
     /**
@@ -122,10 +127,10 @@ public abstract class BaseUiTest {
      * multas usan la base de cálculo correcta.
      */
     protected void crearPacienteFonasaViaApi(String rut, String tramo) {
-        crearPacienteViaApi(rut, "FONASA", tramo);
+        crearPacienteViaApi(rut, "Paciente de Prueba UI", "FONASA", tramo);
     }
 
-    private void crearPacienteViaApi(String rut, String prevision, String tramoFonasa) {
+    private void crearPacienteViaApi(String rut, String nombre, String prevision, String tramoFonasa) {
         try (Playwright playwright = Playwright.create()) {
             APIRequestContext api = playwright.request().newContext(
                     new APIRequest.NewContextOptions().setBaseURL(BASE_URL));
@@ -136,13 +141,13 @@ public abstract class BaseUiTest {
                     """
                     {
                       "rut": "%s",
-                      "nombre": "Paciente de Prueba UI",
+                      "nombre": "%s",
                       "fechaNacimiento": "1990-05-10",
                       "prevision": "%s",
                       "tramoFonasa": %s,
                       "convenioEmpresa": false
                     }
-                    """.formatted(rut, prevision, tramoJson)));
+                    """.formatted(rut, nombre.replace("\"", "\\\""), prevision, tramoJson)));
             assertThat(respuesta.status()).as("creacion del paciente de prueba").isEqualTo(201);
         }
     }

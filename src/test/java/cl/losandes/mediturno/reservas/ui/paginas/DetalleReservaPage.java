@@ -1,5 +1,6 @@
 package cl.losandes.mediturno.reservas.ui.paginas;
 
+import com.microsoft.playwright.Locator;
 import com.microsoft.playwright.Page;
 
 import java.time.LocalDateTime;
@@ -23,6 +24,10 @@ public class DetalleReservaPage extends BasePage {
     public DetalleReservaPage esperarCargada() {
         testid("detalle-id").waitFor();
         return this;
+    }
+
+    public Locator paciente() {
+        return testid("detalle-paciente");
     }
 
     public String estado() {
