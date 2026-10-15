@@ -1,0 +1,15 @@
+System Name: MediTurno_3wise_Alto_Riesgo
+
+Strength: 3
+Mode: scratch
+Algorithm: ipog
+Constraint Handling: Ignored
+Verify Coverage: off
+
+Parameters	: 3
+Constraints	: 0
+Covered Tuples	: 128 (3-way: 128) 
+Number of Tests	: 128
+Time (seconds)	: 0.002 
+
+Output file: docs/testing-combinatorio/casos-3wise.csv

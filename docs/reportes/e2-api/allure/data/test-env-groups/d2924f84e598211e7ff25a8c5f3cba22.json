@@ -1,0 +1,1 @@
+{"id":"d2924f84e598211e7ff25a8c5f3cba22","fullName":"cl.losandes.mediturno.reservas.api.ListaDeEsperaApiTest.cp11_anularEnEsperaSinMulta","name":"CP-11: anular una reserva EN_ESPERA no genera multa","status":"failed","testResultsByEnv":{"default":"e961e6984c6068b7df66102e611b801f"}}

@@ -7,3 +7,6 @@ test-output/
 *.iml
 .vscode/
 .DS_Store
+.venv-pairwise
+tools/acts/acts.jar
+.allure/

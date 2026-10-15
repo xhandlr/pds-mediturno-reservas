@@ -1,0 +1,9 @@
+Generación de cobertura 3-wise
+
+Variables de alto riesgo:
+- Anticipacion: 8 valores
+- HistorialInasistencias: 4 valores
+- Canal: 4 valores
+
+Combinaciones requeridas: 8 * 4 * 4 = 128
+Casos generados: 128
